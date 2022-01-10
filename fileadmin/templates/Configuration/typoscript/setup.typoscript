@@ -1,0 +1,256 @@
+// config.metaCharset = utf-8
+// config.no_cache = 0
+// config.admPanel = 0
+// config.debug = 0
+
+// config.spamProtectEmailAddresses = 2
+// config.spamProtectEmailAddresses_atSubst = -monkey-tail-
+// config.spamProtectEmailAddresses_lastDotSubst = -dot-
+
+// # replace baseURL with your domain, don't forget to add a trailing slash
+// # the following 3 lines are used primarily with the RealUrl extension
+// config.baseURL = http://typo3buddy.com/
+// config.simulateStaticDocuments = 0
+// config.tx_realurl_enable = 1
+config.metaCharset = utf-8
+config.no_cache = 0
+config.doctype = html5
+page= PAGE
+page.10 = FLUIDTEMPLATE
+page.10 {
+    format = html
+     file = fileadmin/templates/layouts/Main_layout.html
+     partialRootPath=fileadmin/templates/partials/
+     layoutRootPath=fileadmin/templates/layouts/
+
+    variables {
+        // ask about it 
+        content_main < styles.content.get 
+        content_main.select.where = colPos = 0
+    }
+}
+
+page.10.file.stdWrap.cObject = CASE
+page.10.file.stdWrap.cObject {
+    key.data = levelfield:-1, backend_layout_next_level, slide
+    key.override.field = backend_layout
+   
+    default = TEXT
+    default.value = fileadmin/templates/Main_1_column_with_menu.html
+    // 1 = TEXT
+    // 1.value = fileadmin/templates/main_1_column_with_menu.html
+    // 2 = TEXT
+    // 2.value = fileadmin/templates/main_1_column_without_menu.html
+    // 3 = TEXT
+    // 3.value = fileadmin/templates/main_2_column_without_menu.html
+  	
+}
+lib.header_menu = COA
+lib.header_menu {
+    1 = HMENU
+    1 {
+        special = directory
+        special.value.field = tx_mask_link_root_id
+
+        wrap = <ul class="list-group">|</ul>
+        stdWrap.if.isTrue.data = register:count_menuItems
+
+        1 = TMENU
+        1 {
+            NO = 1
+            NO {
+                allWrap = <li class="list-group-item">|</li>
+                stdWrap.htmlSpecialChars = 1
+                ATagTitle.field = description // subtitle // title
+            }
+        }
+    }
+}
+lib.header_menu = COA
+lib.header_menu {
+    10 = HMENU
+    10 {
+        wrap = <div class="menu_header menu_ul">|</div>
+        entryLevel = 0
+        1 = TMENU
+        1 {
+            expAll = 1
+            noBlur = 1
+            wrap = <ul>|</ul>
+            target = _top
+            NO {
+                stdWrap.htmlSpecialChars = 1
+                wrapItemAndSub = <li>|</li>
+                allWrap = <div class="menu_header_no">|</div>
+            }
+            ACT < .NO
+            ACT = 1
+            ACT {
+                allWrap = <div class="menu_header_act">|</div>
+            }
+            IFSUB < .NO
+            IFSUB = 1
+            IFSUB {
+                allWrap = <div class="menu_header_ifsub">|</div>
+            }
+            ACTIFSUB < .IFSUB
+            ACTIFSUB = 1
+            ACTIFSUB {
+                allWrap = <div class="menu_header_actifsub">|</div>
+            }
+        }
+        2 = TMENU
+        2 {
+            noBlur = 1
+            wrap = <ul class="menu_sub">|</ul>
+            target = _top
+            NO {
+                stdWrap.htmlSpecialChars = 1
+                wrapItemAndSub = <li>|</li>
+                allWrap = <div class="menu_sub_no">|</div>
+            }
+            CUR < .NO
+            CUR = 1
+            CUR {
+                allWrap = <div class="menu_sub_act">|</div>
+            }
+            ACT < .CUR
+            ACT = 1
+        }
+    }
+}
+lib.content_menu = COA
+lib.content_menu {
+    10 = HMENU
+    10 {
+        wrap = <div class="menu_left menu_ul">|</div>
+        entryLevel = 0
+        1 = TMENU
+        1 {
+            wrap = <div class="menu_1"><ul>|</ul></div>
+            target = _top
+            NO {
+                wrapItemAndSub = <li>|</li>|*|<li>|</li>|*|<li class="last">|</li>
+            }
+            ACT < .NO
+            ACT = 1
+            CUR < .NO
+            CUR = 1
+            CUR {
+                allWrap = <div class="menu_act">|</div>
+            }
+        }
+        2 = TMENU
+        2 {
+            expAll = 0
+            wrap = <div class="menu_2"><ul>|</ul></div>
+            target = _top
+            NO {
+                wrapItemAndSub = <li>|</li>
+            }
+            ACT < .NO
+            ACT = 1
+            CUR < .NO
+            CUR = 1
+            CUR {
+                allWrap = <div class="menu_act">|</div>
+            }
+        }
+        3 = TMENU
+        3 {
+            expAll = 1
+            wrap = <div class="menu_3"><ul>|</ul></div>
+            target = _top
+            NO {
+                wrapItemAndSub = <li>|</li>
+            }
+            ACT < .NO
+            ACT = 1
+            CUR < .NO
+            CUR = 1
+            CUR {
+                allWrap = <div class="menu_act">|</div>
+            }
+        }
+    }
+}
+lib.footer_left = COA
+lib.footer_left {
+    wrap = <div class="menu_footer menu_ul"><ul>|</ul></div>
+    10 = TEXT
+    10 {
+        data = date:U
+        strftime = %Y
+        wrap = <li>&copy; 2011-| TYPO3Buddy</li><li>&#124;</li>
+    }
+    20 = HMENU
+    20 {
+        special = directory
+        # special.value will contain the page ID of the Footer menu page
+        special.value = 4
+        1 = TMENU
+        1 {
+            target = _self
+            NO {
+                allWrap = <li>|</li><li>&#124;</li>|*|<li>|</li><li>&#124;</li>|*|<li>|</li>
+                wrap = <div class="footer_no">|</div>
+            }
+        }
+    }
+}
+
+lib.footer_right = TEXT
+lib.footer_right.value (
+    <!-- your multilined code here -->
+    <!-- your multilined code here -->
+)
+lib.breadcrumb = COA
+lib.breadcrumb {
+    stdWrap.wrap = <ul class="breadcrumb">|</ul>
+    entryLevel = 1
+
+    10 = HMENU
+    10 {
+         special = rootline
+
+        1 = TMENU
+        1 {
+            noBlur = 1
+
+            NO = 1
+            NO {
+                wrapItemAndSub = <li>|</li>
+                ATagTitle.field = subtitle // title
+                linkWrap = ||*|&nbsp;&rsaquo;&nbsp |*|
+                stdWrap.htmlSpecialChars = 1
+            }
+
+            CUR <.NO
+            CUR {
+                wrapItemAndSub = <li class="active">|</li>
+            }
+        }
+    }
+
+    101=RECORD
+    101 {
+        tables = tx_table_name
+        source.data =  GPvar:tx_plugin_name|param  //param passing in the url
+        conf.tx_besiproduct_product = TEXT
+        conf.tx_besiproduct_product.field = field_name
+        conf.tx_besiproduct_product.required = 1
+        conf.tx_besiproduct_product.wrap =  <li >|</li>
+     }
+}
+page.includeCSS {
+    file1 = fileadmin/templates/css/main.css
+}
+
+# be sure to display website correctly in mobile browsers
+page.headerData.10 = TEXT
+page.headerData.10.value (
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    // <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+    <script type="text/javascript" src="/fileadmin/templates/script/jquery.custom.js"></script>
+)
+
